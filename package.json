@@ -1,0 +1,15 @@
+{
+	"name": "project-code-bundler",
+	"version": "1.0.0",
+	"main": "index.js",
+	"description": "Project to aid with generating production ready source files",
+	"author": "Daniel Flynn",
+	"license": "MIT",
+	"repository": "git://github.com/danny1461/project-code-bundler.git",
+	"bin": {
+		"watcher": "./bin.js"
+	},
+	"scripts": {
+		"test": "node ./test.js"
+	}
+}

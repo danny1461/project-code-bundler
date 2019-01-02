@@ -1,0 +1,40 @@
+{
+	"packages": {
+		"": [
+			"glob",
+			"colors"
+		],
+
+		"js": [
+			"babel-core",
+			"babel-preset-es2015",
+			"uglify-js"
+		],
+		
+		"scss": ["node-sass"],
+		"sass": ["node-sass"],
+
+		"jpg": ["imagemin", "imagemin-jpegtran"],
+		"jpeg": ["imagemin", "imagemin-jpegtran"],
+		"png": ["imagemin", "imagemin-pngquant"]
+	},
+	
+	"glob": {
+		"": [
+			"!node_modules/"
+		],
+
+		"js": [
+			"!**/*.min.js",
+			"!**/_*.js",
+			"**/*.js"
+		],
+
+		"scss": ["**/*.scss"],
+		"sass": ["**/*.scss"],
+
+		"jpg": ["**/*.jpg"],
+		"jpeg": ["**/*.jpeg"],
+		"png": ["**/*.png"]
+	}
+}
