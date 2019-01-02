@@ -2,9 +2,12 @@
 
 const { spawn } = require('child_process');
 
+const cwd = process.cwd();
+const globPath = cwd + '\\node_modules\\glob';
+
 function check() {
 	try {
-		let glob = require('glob');
+		let glob = require(globPath);
 		console.log('glob found');
 		return true;
 	}
