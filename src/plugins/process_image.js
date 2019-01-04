@@ -4,7 +4,7 @@ module.exports = function(watcher) {
 	watcher.registerExt('jpg jpeg png');
 
 	function doWork(file, ext) {
-		console.log(`Process ${ext.toUpperCase()} File: ${file}` + file);
+		console.log(`Process ${ext.toUpperCase()} File: ${file}`);
 
 		return new Promise((resolve) => {
 			setTimeout(() => {

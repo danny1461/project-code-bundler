@@ -2,16 +2,28 @@ const path = require('path');
 const { spawn } = require('child_process');
 const log = require('./log');
 
+const keyCache = {};
+function getDepKey(dep) {
+	if (keyCache[dep]) {
+		return keyCache[dep];
+	}
+
+	return keyCache[dep] = dep.replace(/-[a-z]/gi, (str) => {
+		return str[1].toUpperCase();
+	});
+}
+
 module.exports = function(deps) {
 	return new Promise((resolve) => {
 		let resp = {},
 			missing = [];
 
 		for (let i in deps) {
-			let dep = deps[i];
+			let dep = deps[i],
+				key = getDepKey(dep);
 
 			try {
-				resp[dep] = require(dep);
+				resp[key] = require(dep);
 			}
 			catch (e) {
 				missing.push(dep);
@@ -31,7 +43,7 @@ module.exports = function(deps) {
 				cmd += '.cmd';
 			}
 
-			let installArgs = ['i'].concat(missing, ['--prefix', path.resolve(__dirname, '../../')]),
+			let installArgs = ['i'].concat(missing, ['--no-bin-links', '--prefix', path.resolve(__dirname, '../../')]),
 				child = spawn(cmd, installArgs);
 
 			child.on('close', () => {
@@ -39,9 +51,10 @@ module.exports = function(deps) {
 				clearInterval(timer);
 
 				for (let i in missing) {
-					let dep = missing[i];
+					let dep = missing[i],
+						key = getDepKey(dep);
 					
-					resp[dep] = require(dep);
+					resp[key] = require(dep);
 				}
 
 				resolve(resp);

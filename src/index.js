@@ -41,9 +41,12 @@ class Watcher {
 				return obj.file == file;
 			});
 
-			let queueNdxEvt = queueNdx >= 0 ? this.queue[queueNdx].evt : evt;
-			if (queueNdxEvt != evt) {
-				this.queue.splice(queueNdx, 1);
+			if (queueNdx >= 0) {
+				let evts = [this.queue[queueNdx].evt, evt];
+
+				if (evts.includes('add') && evts.includes('unlink')) {
+					this.queue.splice(queueNdx, 1);
+				}
 			}
 			else {
 				this.queue.push({evt, file});
@@ -115,11 +118,18 @@ class Watcher {
 		for (let i = 0; i < queue.length; i++) {
 			let evt = queue[i].evt,
 				file = path.resolve('./', queue[i].file),
-				ext = path.extname(file).substr(1);
+				ext = path.extname(file).substr(1),
+				isDir = false;
 			
-			let {success} = await this.trigger(`before_${evt} before_${evt}_${ext}`, {file, ext});
+			if (evt == 'unlinkDir') {
+				isDir = true;
+				evt = 'unlink';
+				ext = '';
+			}
+			
+			let {success} = await this.trigger(`before_${evt} before_${evt}_${ext}`, {file, ext, isDir});
 			if (success) {
-				await this.trigger(`${evt} ${evt}_${ext}`, {file, ext});
+				await this.trigger(`${evt} ${evt}_${ext}`, {file, ext, isDir});
 			}
 		}
 
@@ -167,16 +177,16 @@ class Watcher {
 				resolve();
 			})
 			.on('add', (file) => {
-				this.watchQueue('add', path.resolve('./', file));
+				this.watchQueue('add', path.resolve(cwd, file));
 			})
 			.on('change', (file) => {
-				this.watchQueue('change', path.resolve('./', file));
+				this.watchQueue('change', path.resolve(cwd, file));
 			})
 			.on('unlink', (file) => {
-				this.watchQueue('unlink', path.resolve('./', file));
+				this.watchQueue('unlink', path.resolve(cwd, file));
 			})
 			.on('unlinkDir', (dir) => {
-				this.watchQueue('unlink', path.resolve('./', dir));
+				this.watchQueue('unlinkDir', path.resolve(cwd, dir));
 			})
 			.on('error', (err) => log(`{{red:Watcher Error: ${err}}}`));
 		
