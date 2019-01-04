@@ -67,7 +67,7 @@ class Watcher {
 			this.queue = [];
 
 			this._processQueue(queue);
-		}, 500);
+		}, 150);
 	}
 
 	on(evts, cb) {
