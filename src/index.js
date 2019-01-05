@@ -163,8 +163,6 @@ class Watcher {
 			log('.', false);
 		}, 1000);
 
-		let fileCnt = 0;
-
 		this.chokidar = chokidar.watch([
 			'**/*'
 		], {
@@ -174,13 +172,8 @@ class Watcher {
 			ignoreInitial: true,
 			ignorePermissionErrors: true,
 			ignored: (file) => {
-				let ext = path.extname(file).substr(1),
-					ignored = !(ext == '' || this.extensions[ext]);
-
-				if (!ignored) {
-					fileCnt++;
-				}
-				return ignored;
+				let ext = path.extname(file).substr(1);
+				return !(ext == '' || this.extensions[ext]);
 			}
 		});
 
@@ -189,7 +182,6 @@ class Watcher {
 				clearInterval(startingTimer);
 				log('', true, false);
 				log('{{green:File system watcher is now running}}');
-				log(`{{cyan:Watching ${fileCnt} files}}`);
 
 				resolve();
 			})
