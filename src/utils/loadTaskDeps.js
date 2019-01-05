@@ -62,9 +62,6 @@ module.exports = function(deps) {
 					resp[processDep(dep).key] = require(processDep(dep).name);
 				}
 
-				console.log(Object.keys(resp));
-				console.log(depCache);
-
 				resolve(resp);
 			});
 		}

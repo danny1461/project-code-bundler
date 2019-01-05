@@ -104,6 +104,8 @@ module.exports = function(watcher) {
 					}
 				}
 
+				console.log(Object.keys(libs.uglifyJs));
+
 				let result = libs.uglifyJs.minify(files, {
 					output: {
 						comments: 'some'
