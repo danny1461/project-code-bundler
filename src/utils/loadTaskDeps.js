@@ -4,6 +4,11 @@ const log = require('./log');
 
 const keyCache = {};
 function getDepKey(dep) {
+	let versionNdx = dep.indexOf('@', 1);
+	if (versionNdx >= 0) {
+		dep = dep.substr(0, versionNdx);
+	}
+
 	if (keyCache[dep]) {
 		return keyCache[dep];
 	}
