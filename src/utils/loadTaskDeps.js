@@ -59,6 +59,7 @@ module.exports = function(deps) {
 				clearInterval(timer);
 
 				for (let i in missing) {
+					let dep = missing[i];
 					resp[processDep(dep).key] = require(processDep(dep).name);
 				}
 
