@@ -2,15 +2,23 @@ const path = require('path');
 const { spawn } = require('child_process');
 const log = require('./log');
 
-const keyCache = {};
-function getDepKey(dep) {
-	if (keyCache[dep]) {
-		return keyCache[dep];
+const depCache = {};
+function processDep(dep) {
+	if (depCache[dep]) {
+		return depCache[dep];
 	}
 
-	return keyCache[dep] = dep.replace(/-[a-z]/gi, (str) => {
+	let name = dep,
+		versionNdx = dep.indexOf('@', 1);
+	if (versionNdx >= 0) {
+		name = dep.substr(0, versionNdx);
+	}
+
+	let key = clean.replace(/-[a-z]/gi, (str) => {
 		return str[1].toUpperCase();
 	});
+
+	return depCache[dep] = {name, key};
 }
 
 module.exports = function(deps) {
@@ -20,15 +28,10 @@ module.exports = function(deps) {
 			missing = [];
 
 		for (let i in deps) {
-			let dep = deps[i],
-				versionNdx = dep.indexOf('@', 1);
-
-			if (versionNdx >= 0) {
-				clean[dep] = dep.substr(0, versionNdx);
-			}
+			let dep = deps[i];
 
 			try {
-				resp[getDepKey(clean[dep])] = require(clean[dep]);
+				resp[processDep(dep).key] = require(processDep(dep).name);
 			}
 			catch (e) {
 				missing.push(dep);
@@ -56,7 +59,7 @@ module.exports = function(deps) {
 				clearInterval(timer);
 
 				for (let i in missing) {
-					resp[getDepKey(clean[missing[i]])] = require(clean[missing[i]]);
+					resp[processDep(dep).key] = require(processDep(dep).name);
 				}
 
 				resolve(resp);
