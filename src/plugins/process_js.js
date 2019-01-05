@@ -49,7 +49,7 @@ module.exports = function(watcher) {
 
 	// Primary work
 	watcher.on('add_js change_js', ({file}) => {
-		return loadTaskDeps(['babel-core', 'babel-preset-env', 'uglify-js'])
+		return loadTaskDeps(['babel-core@^6.26.3', 'babel-preset-env', 'uglify-js@^1.3.5'])
 			.then(async (libs) => {
 				if (file.match(/\.min\.js$|[\/\\](?:[a-z0-9_-]+-)?includes[\/\\][a-z0-9_-]+\.js$/i)) {
 					return;

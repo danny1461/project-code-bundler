@@ -4,11 +4,6 @@ const log = require('./log');
 
 const keyCache = {};
 function getDepKey(dep) {
-	let versionNdx = dep.indexOf('@', 1);
-	if (versionNdx >= 0) {
-		dep = dep.substr(0, versionNdx);
-	}
-
 	if (keyCache[dep]) {
 		return keyCache[dep];
 	}
@@ -21,14 +16,19 @@ function getDepKey(dep) {
 module.exports = function(deps) {
 	return new Promise((resolve) => {
 		let resp = {},
+			clean = {},
 			missing = [];
 
 		for (let i in deps) {
 			let dep = deps[i],
-				key = getDepKey(dep);
+				versionNdx = dep.indexOf('@', 1);
+
+			if (versionNdx >= 0) {
+				clean[dep] = dep.substr(0, versionNdx);
+			}
 
 			try {
-				resp[key] = require(dep);
+				resp[getDepKey(clean[dep])] = require(clean[dep]);
 			}
 			catch (e) {
 				missing.push(dep);
@@ -56,10 +56,7 @@ module.exports = function(deps) {
 				clearInterval(timer);
 
 				for (let i in missing) {
-					let dep = missing[i],
-						key = getDepKey(dep);
-					
-					resp[key] = require(dep);
+					resp[getDepKey(clean[missing[i]])] = require(clean[missing[i]]);
 				}
 
 				resolve(resp);

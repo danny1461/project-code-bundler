@@ -8,7 +8,7 @@ module.exports = function(watcher) {
 
 	// Primary work
 	watcher.on('add_styl change_styl', ({file, ext}) => {
-		return sassPlugin.boilerPlate(file, ext, ['stylus'], async (libs, destFile) => {
+		return sassPlugin.boilerPlate(file, ext, ['stylus@^0.54.5'], async (libs, destFile) => {
 			let stylInput = await promisify(fs.readFile)(file, {encoding: 'UTF-8'});
 
 			let renderer = new libs.stylus(stylInput, {

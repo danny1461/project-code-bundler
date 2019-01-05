@@ -8,7 +8,7 @@ module.exports = function(watcher) {
 
 	// Primary work
 	watcher.on('add_less change_less', ({file, ext}) => {
-		return sassPlugin.boilerPlate(file, ext, ['less'], async (libs, destFile) => {
+		return sassPlugin.boilerPlate(file, ext, ['less@^3.9.0'], async (libs, destFile) => {
 			let lessInput = await promisify(fs.readFile)(file, {encoding: 'UTF-8'});
 
 			let result = await libs.less.render(lessInput, {
