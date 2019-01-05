@@ -14,7 +14,7 @@ function processDep(dep) {
 		name = dep.substr(0, versionNdx);
 	}
 
-	let key = clean.replace(/-[a-z]/gi, (str) => {
+	let key = name.replace(/-[a-z]/gi, (str) => {
 		return str[1].toUpperCase();
 	});
 
@@ -24,7 +24,6 @@ function processDep(dep) {
 module.exports = function(deps) {
 	return new Promise((resolve) => {
 		let resp = {},
-			clean = {},
 			missing = [];
 
 		for (let i in deps) {
