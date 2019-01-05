@@ -39,13 +39,13 @@ module.exports = function(watcher) {
 	}
 
 	// Primary work
-	watcher.on('add_jpg add_jpeg change_jpg change_jpeg', ({file, ext}) => {
+	watcher.on('add_jpg add_jpeg change_jpg change_jpeg', ({file}) => {
 		return loadTaskDeps(['imagemin', 'imagemin-jpegtran']).then((libs) => {
 			return doWork(file, libs.imageminJpegtran(), libs.imagemin);
 		});
 	});
 
-	watcher.on('add_png change_png', ({file, ext}) => {
+	watcher.on('add_png change_png', ({file}) => {
 		return loadTaskDeps(['imagemin', 'imagemin-pngquant']).then((libs) => {
 			return doWork(file, libs.imageminPngquant(), libs.imagemin);
 		});

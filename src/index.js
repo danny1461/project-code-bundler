@@ -9,6 +9,8 @@ class Watcher {
 
 		this.extensions = {};
 		this.events = {};
+		this.queue = [];
+		this.processQueue = null;
 
 		this._loadPlugins();
 	}
@@ -31,7 +33,13 @@ class Watcher {
 		let pluginPath = path.join(__dirname, 'plugins');
 
 		this._recurseDir(pluginPath, (pluginFile) => {
-			require(pluginFile)(this);
+			let plugin = require(pluginFile);
+			if (typeof plugin == 'function') {
+				plugin(this);
+			}
+			else if (typeof plugin == 'object' && typeof plugin.install == 'function') {
+				plugin.install(this);
+			}
 		});
 	}
 
@@ -62,11 +70,11 @@ class Watcher {
 		}
 
 		this.queueTimer = setTimeout(() => {
-			let queue = this.queue;
+			this.processQueue = this.queue;
 			this.queueTimer = false;
 			this.queue = [];
 
-			this._processQueue(queue);
+			this._processQueue();
 		}, 150);
 	}
 
@@ -112,12 +120,12 @@ class Watcher {
 			});
 	}
 
-	async _processQueue(queue) {
+	async _processQueue() {
 		this.running = true;
 
-		for (let i = 0; i < queue.length; i++) {
-			let evt = queue[i].evt,
-				file = path.resolve('./', queue[i].file),
+		for (let i = 0; i < this.processQueue.length; i++) {
+			let evt = this.processQueue[i].evt,
+				file = path.resolve('./', this.processQueue[i].file),
 				ext = path.extname(file).substr(1),
 				isDir = false;
 			
@@ -134,6 +142,7 @@ class Watcher {
 		}
 
 		this.running = false;
+		this.processQueue = null;
 		this.watchQueue();
 	}
 
@@ -154,25 +163,33 @@ class Watcher {
 			log('.', false);
 		}, 1000);
 
+		let fileCnt = 0;
+
 		this.chokidar = chokidar.watch([
 			'**/*'
 		], {
+			usePolling: true,
+			binaryInterval: 1000,
 			persistent: true,
 			ignoreInitial: true,
 			ignorePermissionErrors: true,
 			ignored: (file) => {
-				let ext = path.extname(file).substr(1);
-				return !(ext == '' || this.extensions[ext]);
+				let ext = path.extname(file).substr(1),
+					ignored = !(ext == '' || this.extensions[ext]);
+
+				if (!ignored) {
+					fileCnt++;
+				}
+				return ignored;
 			}
 		});
-
-		this.queue = [];
 
 		this.chokidar
 			.on('ready', () => {
 				clearInterval(startingTimer);
 				log('', true, false);
 				log('{{green:File system watcher is now running}}');
+				log(`{{cyan:Watching ${fileCnt} files}}`);
 
 				resolve();
 			})
