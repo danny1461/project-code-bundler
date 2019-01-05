@@ -49,7 +49,7 @@ module.exports = function(watcher) {
 
 	// Primary work
 	watcher.on('add_js change_js', ({file}) => {
-		return loadTaskDeps(['babel-core@^6.26.3', 'babel-preset-env', 'uglify-js@^1.3.5'])
+		return loadTaskDeps(['babel-core@^6.26.3', 'babel-preset-env', 'uglify-js@^3.4.9'])
 			.then(async (libs) => {
 				if (file.match(/\.min\.js$|[\/\\](?:[a-z0-9_-]+-)?includes[\/\\][a-z0-9_-]+\.js$/i)) {
 					return;
@@ -103,8 +103,6 @@ module.exports = function(watcher) {
 						return;
 					}
 				}
-
-				console.log(Object.keys(libs.uglifyJs));
 
 				let result = libs.uglifyJs.minify(files, {
 					output: {
