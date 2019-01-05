@@ -10,7 +10,6 @@
 		"watcher": "./bin.js"
 	},
 	"scripts": {
-		"postinstall": "npm install",
 		"test": "node ./test.js"
 	},
 	"dependencies": {
