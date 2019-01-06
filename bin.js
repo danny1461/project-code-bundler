@@ -24,7 +24,7 @@ for (let i = 2; i < process.argv.length; i++) {
 		usage();
 	}
 
-	arg = arg.replace(/-[a-z]/gi, (str) => {
+	arg = arg.substr(1).replace(/-[a-z]/gi, (str) => {
 		return str[1].toUpperCase();
 	});
 
