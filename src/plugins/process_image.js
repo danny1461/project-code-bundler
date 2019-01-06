@@ -22,6 +22,7 @@ module.exports = function(watcher) {
 	});
 
 	async function doWork(file, plugin, imagemin) {
+		log('');
 		log(`Compressing image file:`);
 		log(`{{cyan:${file}}}`);
 

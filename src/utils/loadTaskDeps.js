@@ -38,6 +38,7 @@ module.exports = function(deps) {
 		}
 
 		if (missing.length) {
+			log('');
 			log('Missing required libraries: {{yellow:' + missing.join(' ') + '}}');
 			log('Installing..', false, true);
 
@@ -54,15 +55,18 @@ module.exports = function(deps) {
 				child = spawn(cmd, installArgs);
 
 			child.on('close', () => {
-				log(' finished', true, false);
-				clearInterval(timer);
+				// Allow fs to settle
+				setTimeout(() => {
+					log(' finished', true, false);
+					clearInterval(timer);
 
-				for (let i in missing) {
-					let dep = missing[i];
-					resp[processDep(dep).key] = require(processDep(dep).name);
-				}
+					for (let i in missing) {
+						let dep = missing[i];
+						resp[processDep(dep).key] = require(processDep(dep).name);
+					}
 
-				resolve(resp);
+					resolve(resp);
+				}, 1000);
 			});
 		}
 		else {
