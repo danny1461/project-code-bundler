@@ -10,11 +10,9 @@ module.exports = function(msg, icon) {
 	};
 
 	if (icon) {
-		if (/[\/\\]/.test(icon)) {
+		if (!icon.match(/[\/\\]/)) {
 			icon = path.resolve(__dirname, '../icons', icon);
 		}
-
-		console.log(icon);
 		
 		options.icon = icon;
 	}
