@@ -55,18 +55,15 @@ module.exports = function(deps) {
 				child = spawn(cmd, installArgs);
 
 			child.on('close', () => {
-				// Allow fs to settle
-				setTimeout(() => {
-					log(' finished', true, false);
-					clearInterval(timer);
+				log(' finished', true, false);
+				clearInterval(timer);
 
-					for (let i in missing) {
-						let dep = missing[i];
-						resp[processDep(dep).key] = require(processDep(dep).name);
-					}
+				for (let i in missing) {
+					let dep = missing[i];
+					resp[processDep(dep).key] = require(processDep(dep).name);
+				}
 
-					resolve(resp);
-				}, 3000);
+				resolve(resp);
 			});
 		}
 		else {
