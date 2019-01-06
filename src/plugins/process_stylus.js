@@ -2,9 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const promisify = require('micro-promisify');
 const sassPlugin = require('./process_sass');
+const notify = require('../utils/notify');
 
 module.exports = function(watcher) {
-	watcher.registerExt('styl');
+	watcher.registerShouldWatchHandler((ext) => {
+		if (ext == 'styl') {
+			return true;
+		}
+	});
 
 	// Primary work
 	watcher.on('add_styl change_styl', ({file, ext}) => {

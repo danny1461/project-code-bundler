@@ -4,17 +4,24 @@ const promisify = require('micro-promisify');
 const loadTaskDeps = require('../utils/loadTaskDeps');
 const log = require('../utils/log');
 const stopWatch = require('../utils/stopWatch');
+const notify = require('../utils/notify');
 
 module.exports = function(watcher) {
-	watcher.registerExt('jpg jpeg png');
+	const expirations = {};
 
-	const expiration = {};
+	watcher.registerShouldWatchHandler((ext) => {
+		if (ext == 'jpg' || ext == 'jpeg' || ext == 'png') {
+			return true;
+		}
+	});
+
+	watcher.registerIgnoreFsEventHandlers((file) => {
+		if (expirations[file]) {
+			return true;
+		}
+	});
 
 	async function doWork(file, plugin, imagemin) {
-		if (expiration[file]) {
-			return;
-		}
-
 		log(`Compressing image file:`);
 		log(`{{cyan:${file}}}`);
 
@@ -27,15 +34,19 @@ module.exports = function(watcher) {
 		});
 
 		if (buffer.length < dataLen) {
+			expirations[file] = true;
+
 			await promisify(fs.writeFile)(file, buffer);
 
-			expiration[file] = true;
 			setTimeout(() => {
-				delete expiration[file];
-			}, 500);
+				delete expirations[file];
+			}, 3000);
 		}
 
 		log(`{{magenta:Task completed in ${stopWatch.end('image_file')}ms}}`);
+		if (!watcher.options.noNotify) {
+			notify(`Optimized ${path.basename(file)}`, file);
+		}
 	}
 
 	// Primary work

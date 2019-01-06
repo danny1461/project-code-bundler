@@ -5,6 +5,7 @@ const promisify = require('micro-promisify');
 const loadTaskDeps = require('../utils/loadTaskDeps');
 const log = require('../utils/log');
 const stopWatch = require('../utils/stopWatch');
+const notify = require('../utils/notify');
 
 const plugin = {
 	watcher: null,
@@ -12,7 +13,11 @@ const plugin = {
 	install: function(watcher) {
 		plugin.watcher = watcher;
 
-		watcher.registerExt('sass scss');
+		watcher.registerShouldWatchHandler((ext) => {
+			if (ext == 'sass' || ext == 'scss') {
+				return true;
+			}
+		});
 	
 		// Primary work
 		watcher.on('add_sass add_scss change_sass change_scss', ({file, ext}) => {
@@ -125,6 +130,9 @@ const plugin = {
 				await plugin.watcher.trigger(`after_${ext}`, file);
 
 				log(`{{magenta:Task completed in ${stopWatch.end(`${ext}_file`)}ms}}`);
+				if (!plugin.watcher.options.noNotify) {
+					notify(`Compiled ${path.basename(file)} to ${path.basename(destFile)}`, `${ext}.png`);
+				}
 			});
 		}
 	}

@@ -2,9 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const promisify = require('micro-promisify');
 const sassPlugin = require('./process_sass');
+const notify = require('../utils/notify');
 
 module.exports = function(watcher) {
-	watcher.registerExt('less');
+	watcher.registerShouldWatchHandler((ext) => {
+		if (ext == 'less') {
+			return true;
+		}
+	});
 
 	// Primary work
 	watcher.on('add_less change_less', ({file, ext}) => {

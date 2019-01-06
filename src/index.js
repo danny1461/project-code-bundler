@@ -4,10 +4,10 @@ const fs = require('fs');
 const path = require('path');
 
 class Watcher {
-	constructor(dir) {
-		this.rootDir = dir;
-
-		this.extensions = {};
+	constructor(options) {
+		this.options = options;
+		this.shouldWatchHandlers = [];
+		this.ignoreFsEventHandlers = [];
 		this.events = {};
 		this.queue = [];
 		this.processQueue = null;
@@ -45,6 +45,12 @@ class Watcher {
 
 	watchQueue(evt = false, file = false) {
 		if (evt && file) {
+			for (let i in this.ignoreFsEventHandlers) {
+				if (this.ignoreFsEventHandlers[i](file) === true) {
+					return;
+				}
+			}
+
 			let queueNdx = this.queue.findIndex((obj) => {
 				return obj.file == file;
 			});
@@ -146,10 +152,12 @@ class Watcher {
 		this.watchQueue();
 	}
 
-	registerExt(exts) {
-		exts.split(' ').forEach((ext) => {
-			this.extensions[ext] = true;
-		});
+	registerShouldWatchHandler(cb) {
+		this.shouldWatchHandlers.push(cb);
+	}
+
+	registerIgnoreFsEventHandlers(cb) {
+		this.ignoreFsEventHandlers.push(cb);
 	}
 
 	start() {
@@ -166,14 +174,30 @@ class Watcher {
 		this.chokidar = chokidar.watch([
 			'**/*'
 		], {
-			usePolling: true,
+			usePolling: !this.options.fsEvents,
 			binaryInterval: 1000,
 			persistent: true,
 			ignoreInitial: true,
 			ignorePermissionErrors: true,
 			ignored: (file) => {
 				let ext = path.extname(file).substr(1);
-				return !(ext == '' || this.extensions[ext]);
+
+				if (ext == '') {
+					return false;
+				}
+				
+				let shouldWatch, resp;
+				for (let i in this.shouldWatchHandlers) {
+					resp = this.shouldWatchHandlers[i](ext, file);
+					if (resp !== undefined) {
+						shouldWatch = resp;
+						if (shouldWatch === false) {
+							return true;
+						}
+					}
+				}
+
+				return !shouldWatch;
 			}
 		});
 

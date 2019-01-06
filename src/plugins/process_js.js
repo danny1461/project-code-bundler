@@ -6,9 +6,14 @@ const loadTaskDeps = require('../utils/loadTaskDeps');
 const alphanumSort = require('../utils/alphanumSort');
 const log = require('../utils/log');
 const stopWatch = require('../utils/stopWatch');
+const notify = require('../utils/notify');
 
 module.exports = function(watcher) {
-	watcher.registerExt('js');
+	watcher.registerShouldWatchHandler((ext) => {
+		if (ext == 'js') {
+			return true;
+		}
+	});
 
 	async function handleParentFiles(file) {
 		let basename = path.basename(file),
@@ -126,6 +131,9 @@ module.exports = function(watcher) {
 				await watcher.trigger('after_js', file);
 
 				log(`{{magenta:Task completed in ${stopWatch.end('js_file')}ms}}`);
+				if (!watcher.options.noNotify) {
+					notify(`Compiled ${path.basename(file)} to ${path.basename(destFile)}`, 'js.png');
+				}
 			})
 			.then(() => {
 				return handleParentFiles(path.dirname(file));
