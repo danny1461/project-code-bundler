@@ -132,7 +132,7 @@ class Watcher {
 		for (let i = 0; i < this.processQueue.length; i++) {
 			let evt = this.processQueue[i].evt,
 				file = path.resolve('./', this.processQueue[i].file),
-				ext = path.extname(file).substr(1),
+				ext = path.extname(file).substr(1).toLowerCase(),
 				isDir = false;
 			
 			if (evt == 'unlinkDir') {
@@ -180,7 +180,7 @@ class Watcher {
 			ignoreInitial: true,
 			ignorePermissionErrors: true,
 			ignored: (file) => {
-				let ext = path.extname(file).substr(1);
+				let ext = path.extname(file).substr(1).toLowerCase();
 
 				if (ext == '') {
 					return false;
