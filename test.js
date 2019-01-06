@@ -8,7 +8,7 @@ function usage() {
 	console.log(`
 Project Code Bundler v${version}
 
-watcher [[-args]]
+bundler [[-args]]
 -fsevents    The watcher will use a native watcher for your file system
 -no-notify   The bundlers will not emit OS notifications on success/fail
 `);

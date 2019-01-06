@@ -7,7 +7,7 @@
 	"license": "MIT",
 	"repository": "git://github.com/danny1461/project-code-bundler.git",
 	"bin": {
-		"watcher": "./bin.js"
+		"bundler": "./bin.js"
 	},
 	"scripts": {
 		"test": "node ./test.js"
