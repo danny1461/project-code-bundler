@@ -13,6 +13,8 @@ module.exports = function(msg, icon) {
 		if (/[\/\\]/.test(icon)) {
 			icon = path.resolve(__dirname, '../icons', icon);
 		}
+
+		console.log(icon);
 		
 		options.icon = icon;
 	}
