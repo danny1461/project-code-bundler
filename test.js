@@ -1,8 +1,8 @@
-process.chdir('D:\\Devel\\PHP\\htdocs\\wordpress');
+process.chdir('D:\\Devel\\PHP\\htdocs\\grocery-outlet');
 
 global.cwd = process.cwd();
 
 const Watcher = require('./');
 
-let watcher = new Watcher(options);
+let watcher = new Watcher({});
 watcher.start();

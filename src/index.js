@@ -1,7 +1,7 @@
-const log = require('./utils/log');
 const chokidar = require('chokidar');
 const fs = require('fs');
 const path = require('path');
+const log = require('./utils/log');
 
 class Watcher {
 	constructor(options) {
@@ -165,11 +165,30 @@ class Watcher {
 			p = new Promise((r) => {
 				resolve = r;
 			});
+		
+		// Check for exclusions
+		let exclusions = {};
+		if (fs.existsSync(path.join(cwd, '.bundler'))) {
+			let json = fs.readFileSync(path.join(cwd, '.bundler'));
+			json = JSON.parse(json);
+			json.forEach((dir) => {
+				dir = dir.replace(/[\/\\]/g, path.sep);
+				exclusions[dir] = true;
+			});
+		}
+
+		if (Object.keys(exclusions).length) {
+			log('{{yellow:.bundler path exclusions:}}')
+			for (let i in exclusions) {
+				log(`  {{yellow:${i}}}`);
+			}
+		}
 
 		log('Starting file system watcher..', false, true);
 		let startingTimer = setInterval(() => {
 			log('.', false);
 		}, 1000);
+		let lastDir = null;
 
 		this.chokidar = chokidar.watch([
 			'**/*'
@@ -183,7 +202,9 @@ class Watcher {
 				let ext = path.extname(file).substr(1).toLowerCase();
 
 				if (ext == '') {
-					if (path.basename(file) == 'node_modules') {
+					lastDir = file;
+
+					if (path.basename(file) == 'node_modules' || exclusions[file]) {
 						return true;
 					}
 					
@@ -231,6 +252,21 @@ class Watcher {
 			if (!this.chokidar.closed) {
 				this.chokidar.close();
 			}
+			process.exit();
+		});
+
+		process.on('uncaughtException', (e) => {
+			if (e.message.indexOf('no parsers registered') >= 0) {
+				log('', true, false);
+				log('{{red:Error setting up watcher}}', true, false);
+				log(`{{red:Error occurred in:}} {{cyan:${lastDir}}}`, true, false);
+				log('{{yellow:Consider creating a \'.bundler\' file with a JSON array of directory exclusions}}', true, false);
+				log(`{{yellow:relative to:}} {{cyan:${cwd}}}`, true, false);
+			}
+			else {
+				console.log(e);
+			}
+
 			process.exit();
 		});
 
