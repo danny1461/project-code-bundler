@@ -1,6 +1,6 @@
 const Watcher = require('./');
 
-process.chdir('D:\\Devel\\PHP\\htdocs\\wordpress');
+process.chdir('C:\\Users\\danny\\Desktop\\x');
 global.cwd = process.cwd();
 
 function usage() {

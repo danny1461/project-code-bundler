@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const promisify = require('micro-promisify');
 const sassPlugin = require('./process_sass');
-const notify = require('../utils/notify');
 
 module.exports = function(watcher) {
 	watcher.registerShouldWatchHandler((ext) => {
@@ -18,20 +17,27 @@ module.exports = function(watcher) {
 
 			let renderer = new libs.stylus(stylInput, {
 				sourcemap: true,
-				filename: path.basename(destFile)
+				filename: path.basename(destFile),
+				// Need some way to provide import cwd
 			});
 
-			let css = renderer.render(),
-				map = JSON.stringify(renderer.sourcemap);
+			try {
+				let css = renderer.render(),
+					map = JSON.stringify(renderer.sourcemap);
+	
+				await promisify(fs.writeFile)(destFile, css, {encoding: 'UTF-8'});
+				await promisify(fs.writeFile)(destFile + '.map', map, {encoding: 'UTF-8'});
+				return;
 
-			await promisify(fs.writeFile)(destFile, css, {encoding: 'UTF-8'});
-			await promisify(fs.writeFile)(destFile + '.map', map, {encoding: 'UTF-8'});
-			return;
-
-			/* return {
-				css: renderer.render(),
-				map: renderer.sourcemap
-			}; */
-		})
+				/* return {
+					css: renderer.render(),
+					map: renderer.sourcemap
+				}; */
+			}
+			catch (e) {
+				console.log(e);
+				return false;
+			}
+		});
 	});
 };

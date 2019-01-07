@@ -22,26 +22,29 @@ const plugin = {
 		// Primary work
 		watcher.on('add_sass add_scss change_sass change_scss', ({file, ext}) => {
 			return plugin.boilerPlate(file, ext, ['node-sass@^4.11.0'], async (libs, destFile) => {
-				let result = libs.nodeSass.renderSync({
-					file,
-					outputStyle: 'compressed',
-					outFile: path.basename(destFile),
-					sourceMap: path.basename(destFile) + '.map'
-				});
+				try {
+					let result = libs.nodeSass.renderSync({
+						file,
+						outputStyle: 'compressed',
+						outFile: path.basename(destFile),
+						sourceMap: path.basename(destFile) + '.map'
+					});
 
-				if (result.error) {
-					console.log(result.error);
+					await promisify(fs.writeFile)(destFile, result.css, {encoding: 'UTF-8'});
+					await promisify(fs.writeFile)(destFile + '.map', result.map, {encoding: 'UTF-8'});
+					return;
+
+					/* return {
+						css: result.css,
+						map: result.map
+					}; */
+				}
+				catch (e) {
+					log(`{{red:Error in ${e.file}}}`);
+					log(`{{red:Line ${e.line} Column ${e.column}}}`);
+					log(`${e.formatted}`, true, false);
 					return false;
 				}
-
-				await promisify(fs.writeFile)(destFile, result.css, {encoding: 'UTF-8'});
-				await promisify(fs.writeFile)(destFile + '.map', result.map, {encoding: 'UTF-8'});
-				return;
-
-				/* return {
-					css: result.css,
-					map: result.map
-				}; */
 			});
 		});
 	},
