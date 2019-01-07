@@ -128,7 +128,7 @@ module.exports = function(watcher) {
 				await promisify(fs.writeFile)(destFile, result.code, {encoding: 'UTF-8'});
 				await promisify(fs.writeFile)(sourceMapFile, result.map, {encoding: 'UTF-8'});
 
-				await watcher.trigger('after_js', file);
+				await watcher.trigger('after_js', {file, destFile});
 
 				log(`{{magenta:Task completed in ${stopWatch.end('js_file')}ms}}`);
 				if (!watcher.options.noNotify) {

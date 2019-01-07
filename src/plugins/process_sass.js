@@ -130,7 +130,7 @@ const plugin = {
 					await promisify(fs.writeFile)(destFile + '.map', resp.sourceMap, {encoding: 'UTF-8'});
 				}
 
-				await plugin.watcher.trigger(`after_${ext}`, file);
+				await plugin.watcher.trigger(`after_${ext}`, {file, destFile});
 
 				log(`{{magenta:Task completed in ${stopWatch.end(`${ext}_file`)}ms}}`);
 				if (!plugin.watcher.options.noNotify) {

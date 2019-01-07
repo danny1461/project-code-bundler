@@ -13,5 +13,14 @@ module.exports = function(watcher) {
 				return false;
 			}
 		});
+
+		watcher.on('dest_css_file', (destFile) => {
+			if (path.basename(destFile) == 'style.min.css') {
+				let theme = destFile.match(/wp-content[\/\\]themes[\/\\]([a-zA-Z0-9_-]+)[\/\\]/);
+				destFile = path.join(cwd, 'wp-content/themes', theme[1], 'style.css');
+			}
+
+			return destFile;
+		});
 	}
 };
