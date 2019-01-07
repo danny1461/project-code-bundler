@@ -52,6 +52,9 @@ module.exports = function(watcher) {
 									resolve();
 								});
 							}
+							else {
+								resolve();
+							}
 						});
 					}
 					else {
