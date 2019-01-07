@@ -183,6 +183,10 @@ class Watcher {
 				let ext = path.extname(file).substr(1).toLowerCase();
 
 				if (ext == '') {
+					if (path.basename(file) == 'node_modules') {
+						return true;
+					}
+					
 					return false;
 				}
 				
