@@ -29,7 +29,7 @@ function log(msgs, newLine, prefix) {
 
 	msgs.forEach((str) => {
 		let match;
-		while (match = str.match(/\{\{([a-z]+):(.*?)\}\}/)) {
+		while (match = str.match(/\{\{([a-z]+):((?:\s|.)*?)\}\}/)) {
 			str = str.substr(0, match.index) + colors[match[1]](match[2]) + str.substr(match.index + match[0].length);
 		}
 

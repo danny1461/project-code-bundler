@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const promisify = require('micro-promisify');
 const sassPlugin = require('./process_sass');
+const log = require('../utils/log');
 
 module.exports = function(watcher) {
 	watcher.registerShouldWatchHandler((ext) => {
@@ -35,7 +36,8 @@ module.exports = function(watcher) {
 				}; */
 			}
 			catch (e) {
-				console.log(e);
+				log('{{red:Error}}');
+				log(`{{red:${e.message}}}`);
 				return false;
 			}
 		});
