@@ -62,7 +62,8 @@ module.exports = function(watcher) {
 
 				stopWatch.start('js_file');
 
-				let fileStem = path.basename(file, '.js');
+				let fileStem = path.basename(file, '.js'),
+					prefixLen = path.dirname(file).length + 1;
 
 				let filePatterns = [
 					path.resolve(file, '../includes/*.js'),
@@ -75,7 +76,8 @@ module.exports = function(watcher) {
 					let searchResults = await promisify(glob)(filePatterns[i], {nonull: false});
 					alphanumSort(searchResults, true);
 					for (let j = 0; j < searchResults.length; j++) {
-						files[path.resolve(searchResults[j])] = searchResults[j];
+						let filePath = path.resolve(searchResults[j]).substr(prefixLen);
+						files[filePath] = searchResults[j];
 					}
 				}
 
@@ -85,8 +87,8 @@ module.exports = function(watcher) {
 
 				log('');
 				log('JS Files(s) Processing:');
-				Object.keys(files).forEach((subFile) => {
-					log(`{{cyan:${subFile}}}`);
+				Object.keys(files).forEach((i) => {
+					log(`{{cyan:${files[i]}}}`);
 				});
 				log('   |');
 				log('   v');
@@ -110,6 +112,9 @@ module.exports = function(watcher) {
 				}
 
 				let result = libs.uglifyJs.minify(files, {
+					compress: {
+						drop_debugger: false
+					},
 					output: {
 						comments: 'some'
 					},
