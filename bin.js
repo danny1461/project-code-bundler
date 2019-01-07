@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-const Watcher = require('./');
-
 global.cwd = process.cwd();
 
 function usage() {
@@ -10,6 +8,7 @@ function usage() {
 Project Code Bundler v${version}
 
 bundler [[-args]]
+-update      Update this package to the latest
 -fs-events   The watcher will use a native watcher for your file system
 -no-notify   The bundlers will not emit OS notifications on success/fail
 `);
@@ -31,5 +30,12 @@ for (let i = 2; i < process.argv.length; i++) {
 	options[arg] = true;
 }
 
-let watcher = new Watcher(options);
-watcher.start();
+if (options.update) {
+	require('./src/update');
+}
+else {
+	const Watcher = require('./');
+
+	let watcher = new Watcher(options);
+	watcher.start();
+}

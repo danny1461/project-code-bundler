@@ -5,7 +5,7 @@
 	"description": "Project to aid with generating production ready source files",
 	"author": "Daniel Flynn",
 	"license": "MIT",
-	"repository": "git://github.com/danny1461/project-code-bundler.git",
+	"repository": "https://github.com/danny1461/project-code-bundler.git",
 	"bin": {
 		"bundler": "./bin.js"
 	},
