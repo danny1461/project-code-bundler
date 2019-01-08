@@ -9,11 +9,11 @@ A global script `bundler` will be exposed to your system. Simply navigate to you
 
 Options
   * -fs-events
-    This package uses chokidar for watching files. Using this options disables usePolling forcing chokidar to use a more performant File System watcher. I have experienced issues with this on Windows however where directories containing watched files cannot be deleted without first deleting the watched files making for a frustrating dev experience. If you are suffering high CPU usage or won't be deleting directories often, use this param to improve performance.
+    * This package uses chokidar for watching files. Using this options disables usePolling forcing chokidar to use a more performant File System watcher. I have experienced issues with this on Windows however where directories containing watched files cannot be deleted without first deleting the watched files making for a frustrating dev experience. If you are suffering high CPU usage or won't be deleting directories often, use this param to improve performance.
   * -no-notify
-    This package uses node-notifier for os specific toasts. Turning this option on disables those notifications
+    * This package uses node-notifier for os specific toasts. Turning this option on disables those notifications
   * -update
-    Run this command to automatically update this package with the latest release in this github repo.
+    * Run this command to automatically update this package with the latest release in this github repo.
 
 ## Features
   * Javascript
