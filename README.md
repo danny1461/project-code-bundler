@@ -19,7 +19,7 @@ Options
   * Javascript
     * Looks for a directory named `includes` in the same directory and prepend any js file found within to itself. The files are sorted in natural order
     * Looks for a directory named `[FILENAME_WO_EXT]-includes` and prepend any js file found within to itself but **after** any included file from `includes`
-	  * **Example:** if it's processing a file called `main.js` it will search in the folder that contains it for `includes` and `main-includes` directories and prepend any *.js files found within
+	  * Example: if it's processing a file called `main.js` it will search in the folder that contains it for `includes` and `main-includes` directories and prepend any *.js files found within
     * Uses babel to transpile any es2015
 	  * Allows the use of `let`, arrow functions, classes, and the rest of es2015 spec
     * Writes a `[FILENAME_WO_EXT].min.js` and `[FILENAME_WO_EXT].min.js.map` file in the same directory
