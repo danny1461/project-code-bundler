@@ -107,6 +107,10 @@ module.exports = function(watcher) {
 						log(`{{red:Line ${e.loc.line} Column ${e.loc.column}}}`);
 						log(`{{red:${e.message}}}`);
 						log(e.codeFrame, true, false);
+
+						if (!watcher.options.noNotify) {
+							notify(`Error found in ${path.basename(files[i])}`, 'error.png');
+						}
 						return;
 					}
 				}

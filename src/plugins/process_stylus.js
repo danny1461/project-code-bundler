@@ -38,6 +38,9 @@ module.exports = function(watcher) {
 			catch (e) {
 				log('{{red:Error}}');
 				log(`{{red:${e.message}}}`);
+				if (!watcher.options.noNotify) {
+					notify(`Error found processing ${path.basename(file)}`, 'error.png');
+				}
 				return false;
 			}
 		});

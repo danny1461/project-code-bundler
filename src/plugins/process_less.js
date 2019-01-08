@@ -33,6 +33,9 @@ module.exports = function(watcher) {
 				log(`{{red:Error}}`);
 				log(`{{red:Line ${result.error.line} Column ${result.error.column}}}`);
 				log(`{{red:${result.error.message}}}`);
+				if (!watcher.options.noNotify) {
+					notify(`Error found processing ${path.basename(file)}`, 'error.png');
+				}
 				return false;
 			}
 

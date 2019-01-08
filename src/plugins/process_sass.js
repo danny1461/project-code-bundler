@@ -43,6 +43,9 @@ const plugin = {
 					log(`{{red:Error in ${e.file}}}`);
 					log(`{{red:Line ${e.line} Column ${e.column}}}`);
 					log(`${e.formatted}`, true, false);
+					if (!watcher.options.noNotify) {
+						notify(`Error found processing ${path.basename(file)}`, 'error.png');
+					}
 					return false;
 				}
 			});
