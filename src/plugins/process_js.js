@@ -76,8 +76,8 @@ module.exports = function(watcher) {
 					let searchResults = await promisify(glob)(filePatterns[i], {nonull: false});
 					alphanumSort(searchResults, true);
 					for (let j = 0; j < searchResults.length; j++) {
-						let filePath = path.resolve(searchResults[j]).substr(prefixLen);
-						files[filePath] = searchResults[j];
+						let filePath = path.resolve(searchResults[j]);
+						files[filePath.substr(prefixLen)] = filePath
 					}
 				}
 
