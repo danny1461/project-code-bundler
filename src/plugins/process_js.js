@@ -97,6 +97,7 @@ module.exports = function(watcher) {
 				for (let i in files) {
 					try {
 						let code = await promisify(fs.readFile)(files[i], {encoding: 'UTF-8'});
+						code = '(function(){' + code + '})();';
 						let result = libs.babelCore.transform(code, {
 							presets: [libs.babelPresetEnv]
 						});
