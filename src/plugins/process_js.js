@@ -100,7 +100,7 @@ module.exports = function(watcher) {
 						let result = libs.babelCore.transform(code, {
 							presets: [libs.babelPresetEnv]
 						});
-						files[i] = '(function(){' + result.code + '})();';
+						files[i] = result.code;
 					}
 					catch (e) {
 						log(`{{red:Error in ${i}}}`);
