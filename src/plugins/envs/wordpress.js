@@ -15,10 +15,14 @@ module.exports = function(watcher) {
 		});
 
 		watcher.on('dest_css_file', (destFile) => {
-			if (path.basename(destFile) == 'style.min.css') {
-				let theme = destFile.match(/wp-content[\/\\]themes[\/\\]([a-zA-Z0-9_-]+)[\/\\]/);
-				destFile = path.join(cwd, 'wp-content/themes', theme[1], 'style.css');
-			}
+			let baseName = path.basename(destFile);
+			
+			['style', 'editor-styles'].forEach((file) => {
+				if (baseName == `${file}.min.css`) {
+					let theme = destFile.match(/wp-content[\/\\]themes[\/\\]([a-zA-Z0-9_-]+)[\/\\]/);
+					destFile = path.join(cwd, 'wp-content/themes', theme[1], `${file}.css`);
+				}
+			});
 
 			return destFile;
 		});
