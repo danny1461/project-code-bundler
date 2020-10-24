@@ -21,9 +21,9 @@ const plugin = {
 	
 		// Primary work
 		watcher.on('add_sass add_scss change_sass change_scss', ({file, ext}) => {
-			return plugin.boilerPlate(file, ext, ['node-sass'], async (libs, destFile) => {
+			return plugin.boilerPlate(file, ext, ['sass'], async (libs, destFile) => {
 				try {
-					let result = libs.nodeSass.renderSync({
+					let result = libs.sass.renderSync({
 						file,
 						outputStyle: 'compressed',
 						outFile: path.basename(destFile),

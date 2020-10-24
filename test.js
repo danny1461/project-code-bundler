@@ -1,4 +1,4 @@
-process.chdir('D:\\Devel\\PHP\\htdocs\\grocery-outlet');
+process.chdir('D:\\Dev\\Source\\php\\htdocs\\lab\\project-code-bundler-test');
 
 global.cwd = process.cwd();
 
