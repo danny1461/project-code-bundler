@@ -54,7 +54,7 @@ module.exports = function(watcher) {
 
 	// Primary work
 	watcher.on('add_js change_js', ({file}) => {
-		return loadTaskDeps(['babel-core@^6.26.3', 'babel-preset-env', 'uglify-js@^3.4.9'])
+		return loadTaskDeps(['babel-core@^6.26.3', 'babel-preset-env', 'babel-preset-stage-0', 'uglify-js'])
 			.then(async (libs) => {
 				if (file.match(/\.min\.js$|[\/\\](?:[a-z0-9_-]+-)?includes[\/\\][a-z0-9._-]+\.js$/i)) {
 					return;
@@ -98,7 +98,7 @@ module.exports = function(watcher) {
 					try {
 						let code = await promisify(fs.readFile)(files[i], {encoding: 'UTF-8'});
 						let result = libs.babelCore.transform(code, {
-							presets: [libs.babelPresetEnv]
+							presets: [libs.babelPresetEnv, libs.babelPresetStage0]
 						});
 						files[i] = result.code;
 					}

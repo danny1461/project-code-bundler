@@ -1,6 +1,6 @@
 {
 	"name": "project-code-bundler",
-	"version": "0.9.9",
+	"version": "1.0.0",
 	"main": "index.js",
 	"description": "Project to aid with generating production ready source files",
 	"author": "Daniel Flynn",
@@ -15,6 +15,7 @@
 	"dependencies": {
 		"babel-core": "^6.26.3",
 		"babel-preset-env": "^1.7.0",
+		"babel-preset-stage-0": "^6.24.1",
 		"chokidar": "^2.0.4",
 		"colors": "^1.3.3",
 		"glob": "^7.1.3",
@@ -24,6 +25,6 @@
 		"micro-promisify": "^0.1.1",
 		"node-notifier": "^5.3.0",
 		"sass": "^1.27.0",
-		"uglify-js": "^3.4.9"
+		"uglify-js": "^3.13.6"
 	}
 }

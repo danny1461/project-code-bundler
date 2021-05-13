@@ -14,7 +14,7 @@ function processDep(dep) {
 		name = dep.substr(0, versionNdx);
 	}
 
-	let key = name.replace(/-[a-z]/gi, (str) => {
+	let key = name.replace(/-[a-z0-9]/gi, (str) => {
 		return str[1].toUpperCase();
 	});
 
