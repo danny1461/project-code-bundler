@@ -28,11 +28,13 @@ module.exports = function(watcher) {
 		});
 
 		watcher.on('after_js after_css', ({file, destFile}) => {
-			let theme = destFile.match(/wp-content[\/\\]themes[\/\\]([a-zA-Z0-9_-]+)[\/\\]/),
-				resourceFiles = [
-					path.join(cwd, 'wp-content/themes', theme[1], 'inc/functions/resources.inc.php'),
-					path.join(cwd, 'wp-content/themes', theme[1], 'functions.php')
-				];
+			let theme = destFile.match(/wp-content[\/\\]themes[\/\\]([a-zA-Z0-9_-]+)[\/\\]/);
+			theme = path.join(cwd, 'wp-content/themes', theme[1], '/')
+
+			let resourceFiles = [
+				path.join(theme, 'inc/functions/resources.inc.php'),
+				path.join(theme, 'functions.php')
+			];
 
 			return new Promise((resolve) => {
 				let resolvedResourcePath = null;
@@ -50,8 +52,14 @@ module.exports = function(watcher) {
 
 				if (resolvedResourcePath) {
 					fs.readFile(resolvedResourcePath, 'UTF-8', (err, contents) => {
-						let regexReadyFile = path.basename(destFile).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
-							regex = new RegExp('(' + regexReadyFile + '[\'"]\\s*,(?:\\s|.)*?,\\s*)([\'"])?([0-9.]+)\\2(\\s*(?:,\\s*(?:true|false)\\s*)?\\)\\s*;)'),
+						let regexReadyFile = destFile.substr(theme.length).replace(/[.*+?^${}()|[\]\\]/g, m => {
+							if (m == '/' || m == '\\') {
+								return '[\\/\\\\]';
+							}
+
+							return '\\' + m;
+						});
+						let regex = new RegExp('(\\/\\*\\s*' + regexReadyFile + ' version\\s*\\*\\/\\s*)([\'"])?([0-9.]+)\\2'),
 							match = contents.match(regex);
 		
 						if (match) {
@@ -64,7 +72,7 @@ module.exports = function(watcher) {
 
 							version = match[3].substr(0, patchNdx + 1) + (version + 1);
 
-							contents = contents.substr(0, match.index) + match[1] + "'" + version + "'" + match[4] + contents.substr(match.index + match[0].length);
+							contents = contents.substr(0, match.index) + match[1] + match[2] + version + match[2] + contents.substr(match.index + match[0].length);
 
 							fs.writeFile(resolvedResourcePath, contents, 'UTF-8', (err) => {
 								log(`{{yellow:Version bumped to: ${version}}}`);
